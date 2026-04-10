@@ -49,4 +49,7 @@ export default defineConfig({
     port: 4173,
   },
   base: import.meta.PROD ? '/hungary2026/' : '',
+  build: {
+    target: 'es2015',
+  },
 })
