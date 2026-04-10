@@ -21,7 +21,7 @@
     </template>
   </v-breadcrumbs>
   <v-select
-    label="Медьє (область)"
+    :label="$t('placeTypes.county')"
     :hide-details="true"
     :return-object="true"
     :clearable="true"
@@ -31,7 +31,7 @@
     variant="outlined"
   ></v-select>
   <v-select
-    label="Виборчий округ"
+    :label="$t('placeTypes.constituency')"
     :hide-details="true"
     :return-object="true"
     :clearable="true"
@@ -41,7 +41,7 @@
     variant="outlined"
   ></v-select>
   <v-select
-    label="Населений пункт"
+    :label="$t('placeTypes.settlement')"
     :hide-details="true"
     :return-object="true"
     :clearable="true"
@@ -52,7 +52,7 @@
     :disabled="!selectedConstituency"
   ></v-select>
   <v-select
-    label="Виборча дільниця"
+    :label="$t('placeTypes.pollingStation')"
     :hide-details="true"
     :return-object="true"
     :clearable="true"

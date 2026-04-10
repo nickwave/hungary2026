@@ -8,10 +8,10 @@
         <v-row class="px-5 pt-5 justify-between lg:flex-nowrap">
           <div class="p-4 content-center">
             <div class="text-display-medium font-bold text-uppercase">
-              Поточні результати
+              {{ $t('captions.currentResults') }}
             </div>
             <div class="mt-4 text-headline-medium">
-              Явка: {{ turnoutPercents.toFixed(2) }}%
+              {{ $t('captions.turnout') }}: {{ turnoutPercents.toFixed(2) }}%
             </div>
           </div>
           <div class="h-[300px] w-[600px] max-lg:w-full max-lg:h-[200px] p-4">
@@ -34,8 +34,8 @@
             bg-color="rgb(5,5,5)"
             grow
           >
-            <v-tab value="results">Результати</v-tab>
-            <v-tab value="stats">Статистика</v-tab>
+            <v-tab value="results">{{ $t('captions.results') }}</v-tab>
+            <v-tab value="stats">{{ $t('captions.statistics') }}</v-tab>
           </v-tabs>
           <v-tabs-window class="pt-5" v-model="selectedTab">
             <v-tabs-window-item value="results">

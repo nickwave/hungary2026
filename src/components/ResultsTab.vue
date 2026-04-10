@@ -1,23 +1,23 @@
 <template>
   <div class="px-4">
     <div class="my-4 text-center text-headline-small text-uppercase">
-      Показники вибраного пункту
+      {{ $t('resultsTab.title') }}
     </div>
     <div class="mt-8 flex flex-col gap-2">
       <div>
-        <span class="text-title-medium">Загальна кількість виборців: </span>
+        <span class="text-title-medium">{{ $t('resultsTab.totalVotersCount') }}: </span>
         <b>{{ selectedPlaceTotalVotersCount.toLocaleString() }}</b>
       </div>
       <div class="mt-4 text-title-medium">
-        Поточна кількість голосів:
+        {{ $t('resultsTab.totalVotesCount') }}:
       </div>
       <div>
-        <span class="text-title-small">За кандидатів: </span>
+        <span class="text-title-small">{{ $t('resultsTab.constituenciesVotesCount') }}: </span>
         <b>{{ selectedPlaceCandidatesVotesCount.toLocaleString()  }}</b>
         ({{ selectedPlaceCandidatesVotesPercents }})
       </div>
       <div>
-        <span class="text-title-small">За списками: </span>
+        <span class="text-title-small">{{ $t('resultsTab.partiesListsVotesCount') }}: </span>
         <b>{{ selectedPlacePartiesVotesCount.toLocaleString()  }}</b>
         ({{ selectedPlacePartiesVotesPercents }})
       </div>
@@ -28,7 +28,7 @@
 
   <div>
     <div class="px-4 mb-4 text-center text-headline-small text-uppercase">
-      В одномандатних округах
+      {{ $t('resultsTab.constituenciesTitle') }}
     </div>
     <div>
       <!-- <template v-if="!selectedCounty">
@@ -52,7 +52,7 @@
 
   <div>
     <div class="px-4 mb-4 text-center text-headline-small text-uppercase">
-      За партійними списками
+      {{ $t('resultsTab.partiesListsTitle') }}
     </div>
     <div>
       <template v-for="(partyResults, i) in partiesToDisplay">
@@ -183,17 +183,17 @@ const candidatesToDisplay = computed(() => {
     return results;
   } else {
     const results = [];
-    // for (const county of counties.value) {
-    //   for (const constituency of county.constituencies) {
-    //     let i = 0;
-    //     for (const candidateResults of constituencyCandidatesResults(constituency)) {
-    //       results.push(candidateResults);
-    //       i++;
-    //       if (i >= 2) break;
-    //     }
-    //   }
-    // }
-    // return results;
+    for (const county of counties.value) {
+      for (const constituency of county.constituencies) {
+        let i = 0;
+        for (const candidateResults of constituencyCandidatesResults(constituency)) {
+          results.push(candidateResults);
+          i++;
+          if (i >= 2) break;
+        }
+      }
+    }
+    return results;
   }
 });
 
