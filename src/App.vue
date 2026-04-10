@@ -26,8 +26,14 @@
             <LeafletMap />
           </div>
         </v-row>
-        <v-col class="mt-5 py-4 pb-16 min-h-[400px] rounded-t-[1rem] bg-[#F0EEEA]">
-          <v-tabs class="px-4" v-model="selectedTab" color="primary" grow>
+        <v-col class="mt-5 pb-16 min-h-[400px] rounded-t-[1rem] bg-[#F0EEEA]">
+          <v-tabs
+            class="rounded-t-4"
+            v-model="selectedTab"
+            color="rgb(255,213,0)"
+            bg-color="rgb(5,5,5)"
+            grow
+          >
             <v-tab value="results">Результати</v-tab>
             <v-tab value="stats">Статистика</v-tab>
           </v-tabs>
