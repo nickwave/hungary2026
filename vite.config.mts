@@ -48,5 +48,5 @@ export default defineConfig({
   server: {
     port: 4173,
   },
-  base: import.meta.env.BASE_URL,
+  base: import.meta.PROD ? '/hungary2026/' : '',
 })
