@@ -342,7 +342,6 @@ function recalculateMandates() {
     mandatesRemains--;
   }
 
-  console.log(mandatesResults);
   mandates.value = Object.entries(mandatesResults).map((partyMandates) => {
     const partyId = partyMandates[0];
     const mandates = partyMandates[1];
