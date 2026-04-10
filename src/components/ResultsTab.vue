@@ -1,0 +1,224 @@
+<template>
+  <div class="px-4">
+    <div class="my-4 text-center text-headline-small text-uppercase">
+      Показники вибраного пункту
+    </div>
+    <div class="mt-8 flex flex-col gap-2">
+      <div>
+        <span class="text-title-medium">Загальна кількість виборців: </span>
+        <b>{{ selectedPlaceTotalVotersCount.toLocaleString() }}</b>
+      </div>
+      <div class="mt-4 text-title-medium">
+        Поточна кількість голосів:
+      </div>
+      <div>
+        <span class="text-title-small">За кандидатів: </span>
+        <b>{{ selectedPlaceCandidatesVotesCount.toLocaleString()  }}</b>
+        ({{ selectedPlaceCandidatesVotesPercents }})
+      </div>
+      <div>
+        <span class="text-title-small">За списками: </span>
+        <b>{{ selectedPlacePartiesVotesCount.toLocaleString()  }}</b>
+        ({{ selectedPlacePartiesVotesPercents }})
+      </div>
+    </div>
+  </div>
+
+  <div class="h-[1px] mb-8"></div>
+
+  <div>
+    <div class="px-4 mb-4 text-center text-headline-small text-uppercase">
+      В одномандатних округах
+    </div>
+    <div>
+      <!-- <template v-if="!selectedCounty">
+        Empty 1
+      </template> -->
+      <!-- <template
+        v-else-if="!selectedConstituency"
+        v-for="(constituency, i) in selectedCountyConstituenciesCandidatesResults"
+      >
+        <div>{{ constituency }}</div>
+        <v-divider v-if="i < candidatesToDisplay.length - 1" />
+      </template> -->
+      <template v-for="(candidateResults, i) in candidatesToDisplay">
+        <CandidateResults class='px-4' :candidateResults="candidateResults"/>
+        <v-divider v-if="i < candidatesToDisplay.length - 1" />
+      </template>
+    </div>
+  </div>
+
+  <div class="h-[1px] my-8"></div>
+
+  <div>
+    <div class="px-4 mb-4 text-center text-headline-small text-uppercase">
+      За партійними списками
+    </div>
+    <div>
+      <template v-for="(partyResults, i) in partiesToDisplay">
+        <PartyResults class='px-4' :partyResults="partyResults"/>
+        <v-divider v-if="i < partiesToDisplay.length - 1" />
+      </template>
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { computed } from "vue";
+
+import CandidateResults from '@/components/CandidateResults.vue';
+import PartyResults from '@/components/PartyResults.vue';
+
+import {
+  counties,
+
+  candidates,
+  parties,
+  candidateById,
+  partyById,
+
+  selectedCounty,
+  selectedConstituency,
+  selectedSettlement,
+  selectedPollingStation,
+} from '@/store';
+
+function getSelectedPlaceTotalVotersCount() {
+  const selectedCountyId = selectedCounty.value?.id;
+  const selectedConstituencyId = selectedConstituency.value?.id;
+  const selectedSettlementId = selectedSettlement.value?.id;
+  const selectedPollingStationId = selectedPollingStation.value?.id;
+  if (!selectedCountyId) {
+    return counties.value.reduce((a, x) => a += x.voters, 0) + 496_286 - 48;
+    // return counties.value.reduce((a, x) => a += x.voters, 0);
+  } else {
+    const county = counties.value.find((x) => selectedCountyId === x.id);
+    if (!selectedConstituencyId && county) return county.voters;
+    const constituency = county.constutuencyById(selectedConstituencyId);
+    if (!selectedSettlementId && constituency) return constituency.voters;
+    const settlement = constituency.settlementById(selectedSettlementId);
+    if (!selectedPollingStationId && settlement) return settlement.voters;
+    const pollingStation = settlement?.pollingStationById(selectedPollingStationId);
+    return pollingStation?.voters ?? 0;
+  }
+}
+const selectedPlaceTotalVotersCount = computed(() => {
+  return getSelectedPlaceTotalVotersCount();
+});
+
+
+
+function getSelectedPlaceVotesCount(votesType: 'candidates' | 'parties') {
+  return (!selectedCounty.value ? counties.value : [selectedCounty.value])
+    .reduce((a, county) => a += county.getVotesCount({
+      votesType: votesType,
+      selectedConstituency: selectedConstituency.value,
+      selectedSettlement: selectedSettlement.value,
+      selectedPollingStation: selectedPollingStation.value,
+    }), 0);
+}
+
+const selectedPlaceCandidatesVotesCount = computed(() => {
+  return getSelectedPlaceVotesCount('candidates');
+});
+const selectedPlaceCandidatesVotesPercents = computed(() => {
+  return `${(getSelectedPlaceVotesCount('candidates') / getSelectedPlaceTotalVotersCount() * 100).toFixed(2)}%`;
+});
+
+const selectedPlacePartiesVotesCount = computed(() => {
+  return getSelectedPlaceVotesCount('parties');
+});
+const selectedPlacePartiesVotesPercents = computed(() => {
+  return `${(getSelectedPlaceVotesCount('parties') / getSelectedPlaceTotalVotersCount() * 100).toFixed(2)}%`;
+});
+
+
+
+const selectedCountyConstituenciesCandidatesResults = computed(() => {
+  const results = [];
+  const constituencies = counties.value.find((county) => {
+    return county.id === selectedCounty.value.id;
+  }).constituencies;
+  for (const constituency of constituencies) {
+    results.push(constituency.name);
+  }
+  return results;
+});
+
+
+function constituencyCandidatesResults(constituency) {
+  const results = {};
+  let totalCandidatesVotes = 0;
+  for (const [candidateId, candidateVotes] of Object.entries(constituency.getCandidatesResults({
+    selectedSettlement: selectedSettlement.value,
+    selectedPollingStation: selectedPollingStation.value,
+  }))) {
+    if (!results[candidateId]) {
+      results[candidateId] = {candidate: candidateById(candidateId), votes: 0};
+    }
+    results[candidateId].votes += candidateVotes;
+    totalCandidatesVotes += candidateVotes;
+  }
+  for (const [candidateId, candidateResults] of Object.entries(results)) {
+    candidateResults.percents = candidateResults.votes / totalCandidatesVotes * 100;
+  }
+  return Object.values(results)
+    .filter((x) => x.votes > 0)
+    .sort((a, b) => a.votes < b.votes);
+}
+
+const candidatesToDisplay = computed(() => {
+  if (selectedConstituency.value) {
+    return constituencyCandidatesResults(selectedConstituency.value);
+  } else if (selectedCounty.value) {
+    const results = [];
+    for (const constituency of selectedCounty.value.constituencies) {
+      let i = 0;
+      for (const candidateResults of constituencyCandidatesResults(constituency)) {
+        results.push(candidateResults);
+        i++;
+        if (i >= 2) break;
+      }
+    }
+    return results;
+  } else {
+    const results = [];
+    // for (const county of counties.value) {
+    //   for (const constituency of county.constituencies) {
+    //     let i = 0;
+    //     for (const candidateResults of constituencyCandidatesResults(constituency)) {
+    //       results.push(candidateResults);
+    //       i++;
+    //       if (i >= 2) break;
+    //     }
+    //   }
+    // }
+    // return results;
+  }
+});
+
+const partiesToDisplay = computed(() => {
+  const results = {};
+  let totalPartiesVotes = 0;
+  const countiesToProcess = !selectedCounty.value ? counties.value : [selectedCounty.value];
+  for (const county of countiesToProcess) {
+    for (const [partyId, partyVotes] of Object.entries(county.getPartiesResults({
+      selectedConstituency: selectedConstituency.value,
+      selectedSettlement: selectedSettlement.value,
+      selectedPollingStation: selectedPollingStation.value,
+    }))) {
+      if (!results[partyId]) {
+        results[partyId] = {party: partyById(partyId), votes: 0};
+      }
+      results[partyId].votes += partyVotes;
+      totalPartiesVotes += partyVotes;
+    }
+  }
+  for (const [partyId, partyResults] of Object.entries(results)) {
+    partyResults.percents = partyResults.votes / totalPartiesVotes * 100;
+  }
+  return Object.values(results)
+    .filter((x) => x.votes > 0)
+    .sort((a, b) => a.votes < b.votes);
+});
+</script>
