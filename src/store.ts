@@ -120,7 +120,7 @@ watch(selectedPollingStation, (newValue, oldValue) => {
     const pollingStationPolygon = pollingStationsPolygons.find((x) => {
       return selectedCounty.value.id === x.countyId &&
         selectedConstituency.value.id == x.constituencyId &&
-        selectedSettlement.value.id === x.settlementId &&
+        selectedSettlement.value?.id === x.settlementId &&
         newValue.id === x.id;
     });
     if (pollingStationPolygon) {

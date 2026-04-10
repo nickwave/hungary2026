@@ -124,25 +124,22 @@
           if (selectedPollingStation) {
             selectedPollingStation = null;
           } else {
-            for (const county of counties) {
-              if (polygon.countyId === county.id) {
-                if (!selectedSettlement) {
-                  const settlement = county.findSettlement({
-                    constituencyId: polygon.constituencyId,
-                    settlementId: polygon.settlementId,
-                  });
-                  selectedSettlement = settlement;
-                }
-                const pollingStation = county.findPollingStation({
-                  constituencyId: polygon.constituencyId,
-                  settlementId: polygon.settlementId,
-                  pollingStationId: polygon.id,
-                });
-                if (pollingStation) {
-                  selectedPollingStation = pollingStation;
-                  return;
-                }
-              }
+            const county = counties.find((c) => polygon.countyId === c.id);
+            if (!selectedSettlement) {
+              const settlement = county.findSettlement({
+                constituencyId: polygon.constituencyId,
+                settlementId: polygon.settlementId,
+              });
+              selectedSettlement = settlement;
+            }
+            const pollingStation = county.findPollingStation({
+              constituencyId: polygon.constituencyId,
+              settlementId: polygon.settlementId,
+              pollingStationId: polygon.id,
+            });
+            if (pollingStation) {
+              selectedPollingStation = pollingStation;
+              return;
             }
           }
         }"
