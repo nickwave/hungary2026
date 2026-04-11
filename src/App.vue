@@ -26,7 +26,7 @@
             <LeafletMap />
           </div>
         </v-row>
-        <div class="mt-5 pb-16 min-h-[400px] rounded-t-[1rem] bg-[#F0EEEA]">
+        <div class="mt-5 pb-16 min-h-[400px] rounded-t-[1rem] bg-[rgb(245,245,245)]">
           <v-tabs
             class="rounded-t-4"
             v-model="selectedTab"

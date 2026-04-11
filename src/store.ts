@@ -387,7 +387,11 @@ async function loadData() {
     }
   }
 
-  await loadLatestResults();
+
+  const params = new URLSearchParams(document.location.search);
+  if (params.has('withResults')) {
+    await loadLatestResults();
+  }
   loader.value.isVisible = false;
   loader.value.reset();
 }
