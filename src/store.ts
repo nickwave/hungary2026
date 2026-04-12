@@ -326,7 +326,8 @@ function recalculateMandates() {
 
   // Then process all another parties
   const partiesPlusSurplusResults = Object.values(partiesVotes)
-    .filter((x) => x.party.isInPartyList && (x.votes / totalPartiesVotes) >= 0.05)
+    .filter((x) => (x.votes / totalPartiesVotes) >= 0.05)
+    // .filter((x) => x.party.isInPartyList && (x.votes / totalPartiesVotes) >= 0.05)
     .sort((a, b) => a.votes < b.votes)
     .map((x) => {
       x.votes += partiesSurplusVotes[x.party.id];

@@ -12,6 +12,7 @@
         <v-icon
           v-if="isWinner"
           icon="mdi-star"
+          :class="`${candidateResults.candidate.partyId}-winner`"
           :style="{'color': `var(${candidateResults.candidate.colorVar})`}"
         ></v-icon>
       </div>
