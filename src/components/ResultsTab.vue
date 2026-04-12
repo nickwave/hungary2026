@@ -101,7 +101,7 @@ function getSelectedPlaceTotalVotersCount() {
   const selectedSettlementId = selectedSettlement.value?.id;
   const selectedPollingStationId = selectedPollingStation.value?.id;
   if (!selectedCountyId) {
-    return counties.value.reduce((a, x) => a += x.voters, 0) + 496_286 - 70;
+    return counties.value.reduce((a, x) => a += x.voters, 0); // + 496_286 - 70;
     // return counties.value.reduce((a, x) => a += x.voters, 0);
   } else {
     const county = counties.value.find((x) => selectedCountyId === x.id);

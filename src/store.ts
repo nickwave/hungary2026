@@ -15,6 +15,8 @@ import {
 import {
   recalculateTotalStatistics,
   load2022Turnouts,
+  load2026Turnouts,
+  turnouts2026,
 } from '@/statistics';
 
 import Api from '@/api';
@@ -184,13 +186,15 @@ function countyById(countyId: string) {
 
 const turnoutPercents = ref(0.0);
 function recalculateTurnoutPercents() {
-  const totalVotes = counties.value.reduce((a, county) => {
-    return a += county.getVotesCount({votesType: 'parties'});
-  }, 0);
-  const totalVoters = counties.value.reduce((a, county) => {
-    return a += county.voters;
-  }, 0) + 496_286 - 70;
-  turnoutPercents.value = totalVotes / totalVoters * 100;
+  // const totalVotes = counties.value.reduce((a, county) => {
+  //   return a += county.getVotesCount({votesType: 'parties'});
+  // }, 0);
+  // const totalVoters = counties.value.reduce((a, county) => {
+  //   return a += county.voters;
+  // }, 0); // + 496_286 - 70;
+  // turnoutPercents.value = totalVotes / totalVoters * 100;
+  const lastGlobalTurnout = Object.values(turnouts2026.value.global_turnouts).pop();
+  turnoutPercents.value = lastGlobalTurnout;
 }
 
 function recalculatePolygonColors() {
@@ -326,8 +330,10 @@ function recalculateMandates() {
 
   // Then process all another parties
   const partiesPlusSurplusResults = Object.values(partiesVotes)
-    .filter((x) => (x.votes / totalPartiesVotes) >= 0.05)
-    // .filter((x) => x.party.isInPartyList && (x.votes / totalPartiesVotes) >= 0.05)
+    .filter((x) => {
+      return (x.votes / totalPartiesVotes) >= 0.05;
+      // return x.party.isInPartyList && (x.votes / totalPartiesVotes) >= 0.05;
+    })
     .sort((a, b) => a.votes < b.votes)
     .map((x) => {
       x.votes += partiesSurplusVotes[x.party.id];
@@ -408,6 +414,7 @@ async function loadData() {
     loadPartiesData(),
     loadCountiesPolygons(),
     load2022Turnouts(),
+    load2026Turnouts(),
   ]);
 
   let promises = [];

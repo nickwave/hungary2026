@@ -72,7 +72,7 @@ import StatsTab from '@/components/StatsTab.vue';
 import Loader from '@/components/Loader.vue';
 
 import { turnoutPercents, loadData } from '@/store';
-import { showStatisticsSection } from '@/statistics';
+import { showStatisticsSection, turnouts2026 } from '@/statistics';
 
 // import MandatesDistributionChart from '@/components/MandatesDistributionChart.vue';
 const MandatesDistributionChart = defineAsyncComponent(() => import('@/components/MandatesDistributionChart.vue'));

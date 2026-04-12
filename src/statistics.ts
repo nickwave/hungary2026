@@ -1,6 +1,12 @@
 import { ref } from "vue";
 
-import { CHOSEN_PARTIES_IDS, loader, counties, candidates } from '@/store';
+import {
+  CHOSEN_PARTIES_IDS,
+  loader,
+  turnoutPercents,
+  counties,
+  candidates,
+} from '@/store';
 
 import Statistics from '@/models/Statistics';
 
@@ -12,6 +18,7 @@ const countiesTurnoutStatistics = ref({});
 const countiesCandidatesStatistics = ref({});
 const countiesPartiesStatistics = ref({});
 const turnouts2022 = ref({});
+const turnouts2026 = ref({});
 
 function calculateStatistics(x: number, values: number[]) : Statistics {
   const stats = new Statistics();
@@ -139,13 +146,27 @@ async function load2022Turnouts() {
   loader.value.increment();
 }
 
+async function load2026Turnouts() {
+  const response = await fetch('data/2026_turnout.json');
+  const data = await response.json();
+  if (data.counties) {
+    turnouts2026.value = data;
+
+    const lastGlobalTurnout = Object.values(turnouts2026.value.global_turnouts).pop();
+    turnoutPercents.value = lastGlobalTurnout;
+  }
+  loader.value.increment();
+}
+
 export {
   showStatisticsSection,
   countiesTurnoutStatistics,
   countiesCandidatesStatistics,
   countiesPartiesStatistics,
   turnouts2022,
+  turnouts2026,
   calculateStatistics,
   recalculateTotalStatistics,
   load2022Turnouts,
+  load2026Turnouts,
 }
