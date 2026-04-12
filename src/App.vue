@@ -10,6 +10,10 @@
             <div class="text-display-medium font-bold text-uppercase">
               {{ $t('captions.currentResults') }}
             </div>
+            <div v-if="currentLastUpdatedDatetime" class="h-[24px] opacity-[0.5]">
+              {{ (new Date(currentLastUpdatedDatetime)).toLocaleString('uk-UA') }}
+            </div>
+            <div v-else class="h-[24px]"></div>
             <div class="mt-4 text-headline-medium">
               {{ $t('captions.turnout') }}: {{ turnoutPercents.toFixed(2) }}%
             </div>
@@ -71,7 +75,7 @@ import ResultsTab from '@/components/ResultsTab.vue';
 import StatsTab from '@/components/StatsTab.vue';
 import Loader from '@/components/Loader.vue';
 
-import { turnoutPercents, loadData } from '@/store';
+import { turnoutPercents, loadData, currentLastUpdatedDatetime } from '@/store';
 import { showStatisticsSection, turnouts2026 } from '@/statistics';
 
 // import MandatesDistributionChart from '@/components/MandatesDistributionChart.vue';
@@ -86,8 +90,6 @@ const LeafletMap = defineAsyncComponent(() => import('@/components/LeafletMap.vu
 const selectedTab = ref('results');
 
 loadData();
-
-
 
 function sendHeightToParent() {
   const mainContentNode = document.getElementById("mainContent");

@@ -35,6 +35,8 @@ const CHOSEN_PARTIES_IDS = [TISZA_ID, FIDESZ_ID, MH_ID];
 const loader = ref(new LoaderData({incrementStep: 5 / 100 * 100}));
 const mapRef = ref();
 
+const currentLastUpdatedDatetime = ref();
+
 const selectedCounty = ref();
 const selectedConstituency = ref();
 const selectedSettlement = ref();
@@ -414,6 +416,7 @@ async function loadLatestResults() {
 async function initUpdatesChecker() {
   const lastUpdatedDatetime = await Api.loadLastUpdatedDatetime();
   localStorage.setItem('lastUpdatedDatetime', lastUpdatedDatetime);
+  currentLastUpdatedDatetime.value = lastUpdatedDatetime;
   const CHECK_INTERVAL_TIME = 1000 * 60 * 5; // Every 5 minutes
   setInterval(async () => {
     try {
@@ -475,6 +478,7 @@ export {
 
   loader,
   mapRef,
+  currentLastUpdatedDatetime,
   mandates,
   counties,
   candidates,
