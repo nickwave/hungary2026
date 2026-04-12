@@ -14,6 +14,10 @@ export default class Constituency {
     this.settlements = data.settlements.map((x) => new Settlement(x));
   }
 
+  calculateVoters() {
+    return this.settlements.reduce((a, x) => a + x.calculateVoters(), 0);
+  }
+
   findSettlement({
     settlementId,
   } : {

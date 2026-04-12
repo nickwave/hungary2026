@@ -20,6 +20,7 @@ export default class PollingStation {
   }
 
   applyResults(resultsData) {
+    this.voters = resultsData.tv ?? this.voters;
     this.votes = resultsData.v;
     const candidatesVotesSum = Object.values(resultsData.c).reduce((s, a) => s + a, 0);
     for (const [candidateId, candidateVotes] of Object.entries(resultsData.c)) {

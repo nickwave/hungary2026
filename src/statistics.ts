@@ -52,7 +52,8 @@ async function recalculateTotalStatistics() {
     // TURNOUT CALCULATIONS
     const countyPariesVotes = county.getVotesCount({'votesType': 'parties'});
     const countyCandidatesVotes = county.getVotesCount({'votesType': 'candidates'});
-    const countyTurnout = countyPariesVotes / county.voters * 100;
+    const countyTurnout = countyPariesVotes / county.calculateVoters() * 100;
+    // const countyTurnout = countyPariesVotes / county.voters * 100;
     countiesTurnouts.push(countyTurnout);
 
     // CANDIDATES CALCULATIONS

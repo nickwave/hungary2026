@@ -101,15 +101,15 @@ function getSelectedPlaceTotalVotersCount() {
   const selectedSettlementId = selectedSettlement.value?.id;
   const selectedPollingStationId = selectedPollingStation.value?.id;
   if (!selectedCountyId) {
-    return counties.value.reduce((a, x) => a += x.voters, 0); // + 496_286 - 70;
+    return counties.value.reduce((a, x) => a += x.calculateVoters() /*x.voters*/, 0); // + 496_286 - 70;
     // return counties.value.reduce((a, x) => a += x.voters, 0);
   } else {
     const county = counties.value.find((x) => selectedCountyId === x.id);
-    if (!selectedConstituencyId && county) return county.voters;
+    if (!selectedConstituencyId && county) return county.calculateVoters(); //.voters;
     const constituency = county.constutuencyById(selectedConstituencyId);
-    if (!selectedSettlementId && constituency) return constituency.voters;
+    if (!selectedSettlementId && constituency) return constituency.calculateVoters(); //.voters;
     const settlement = constituency.settlementById(selectedSettlementId);
-    if (!selectedPollingStationId && settlement) return settlement.voters;
+    if (!selectedPollingStationId && settlement) return settlement.calculateVoters(); //.voters;
     const pollingStation = settlement?.pollingStationById(selectedPollingStationId);
     return pollingStation?.voters ?? 0;
   }

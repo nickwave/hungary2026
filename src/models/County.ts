@@ -15,6 +15,10 @@ export default class County {
     this.constituencies = data.constituencies.map((x) => new Constituency(x));
   }
 
+  calculateVoters() {
+    return this.constituencies.reduce((a, x) => a + x.calculateVoters(), 0);
+  }
+
   findSettlement({
     constituencyId,
     settlementId,

@@ -13,6 +13,10 @@ export default class Settlement {
     this.pollingStations = data.polling_stations.map((x) => new PollingStation(x));
   }
 
+  calculateVoters() {
+    return this.pollingStations.reduce((a, x) => a + x.voters, 0);
+  }
+
   findPollingStation({
     pollingStationId,
   } : {
