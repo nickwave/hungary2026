@@ -48,6 +48,7 @@ function calculateStatistics(x: number, values: number[]) : Statistics {
 async function recalculateTotalStatistics() {
   const countiesTurnouts = [];
   const countiesConstituenciesTurnouts = {};
+  const constituenciesTurnouts = [];
   const countiesCandidatesResults = [];
   const countiesPartiesResults = {};
 
@@ -68,6 +69,7 @@ async function recalculateTotalStatistics() {
       const constituencyCandidatesVotes = constituency.getVotesCount({'votesType': 'candidates'});
       const constituencyTurnout = constituencyPariesVotes / constituency.calculateVoters() * 100;
       countiesConstituenciesTurnouts[county.id].push(constituencyTurnout);
+      constituenciesTurnouts.push(constituencyTurnout);
     }
 
 
@@ -121,7 +123,7 @@ async function recalculateTotalStatistics() {
       countiesConstituenciesTurnoutStatistics.value[county.id][constituency.id] =
         calculateStatistics(
           countiesConstituenciesTurnouts[county.id][j],
-          countiesConstituenciesTurnouts[county.id],
+          constituenciesTurnouts,
         );
       j++;
     }
@@ -187,6 +189,7 @@ async function load2026Turnouts() {
 export {
   showStatisticsSection,
   countiesTurnoutStatistics,
+  countiesConstituenciesTurnoutStatistics,
   countiesCandidatesStatistics,
   countiesPartiesStatistics,
   turnouts2022,

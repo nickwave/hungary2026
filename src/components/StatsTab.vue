@@ -2,9 +2,9 @@
   <div class="px-4" v-if="selectedCounty">
     <div class="my-4 text-center text-headline-small text-uppercase">
       <span>{{ $t('statisticsTab.title') }}</span>
-      <!-- <b v-if="selectedConstituency"> — {{ selectedConstituency.name }}</b> -->
-      <!-- <b v-else-if="selectedCounty"> — {{ selectedCounty.name }}</b> -->
-      <b v-if="selectedCounty"> — {{ selectedCounty.name }}</b>
+      <b v-if="selectedConstituency"> — {{ selectedConstituency.name }}</b>
+      <b v-else-if="selectedCounty"> — {{ selectedCounty.name }}</b>
+      <!-- <b v-if="selectedCounty"> — {{ selectedCounty.name }}</b> -->
     </div>
 
     <div>
@@ -27,17 +27,31 @@
     >
       <div class="flex flex-col gap-4">
         <div class="text-title-large">
-          {{ $t('statisticsTab.turnoutComparsionStatisticsTitle') }}
+          {{ selectedConstituency
+            ? $t('statisticsTab.turnoutConstituenciesComparsionTitle')
+            : $t('statisticsTab.turnoutCountiesComparsionTitle')
+          }}
         </div>
         <div class="flex max-lg:flex-col gap-4">
           <PlaceStatisticsBlock
-            :title="$t('statisticsTab.chosenCountyValueCaption')"
-            :xValueTitle="$t('statisticsTab.selectedCountyValueCaption')"
-            :statistics="countiesTurnoutStatistics[selectedCounty.id]"
+            :title="selectedConstituency
+              ? $t('statisticsTab.chosenConstituencyValueCaption')
+              : $t('statisticsTab.chosenCountyValueCaption')"
+            :xValueTitle="selectedConstituency
+              ? $t('statisticsTab.selectedConstituencyValueCaption')
+              : $t('statisticsTab.selectedCountyValueCaption')"
+            :statistics="selectedConstituency
+              ? countiesConstituenciesTurnoutStatistics[selectedCounty.id][selectedConstituency.id]
+              : countiesTurnoutStatistics[selectedCounty.id]
+            "
           />
           <AggregatedStatisticsBlock
-            :title="$t('statisticsTab.allCountiesValueCaption')"
-            :statistics="countiesTurnoutStatistics[selectedCounty.id]"
+            :title="selectedConstituency
+              ? $t('statisticsTab.allConstituenciesValueCaption')
+              : $t('statisticsTab.allCountiesValueCaption')"
+            :statistics="selectedConstituency
+              ? countiesConstituenciesTurnoutStatistics[selectedCounty.id][selectedConstituency.id]
+              : countiesTurnoutStatistics[selectedCounty.id]"
           />
         </div>
       </div>
@@ -48,7 +62,10 @@
         class="flex flex-col gap-4"
       >
         <div class="text-title-large">
-          {{ $t('statisticsTab.resultsComparsionStatisticsTitle') }}
+          {{ selectedConstituency
+            ? $t('statisticsTab.resultsConstituenciesComparsionTitle')
+            : $t('statisticsTab.resultsCountiesComparsionTitle')
+          }}
         </div>
         <div
           v-for="partyId in CHOSEN_PARTIES_IDS"
@@ -62,12 +79,16 @@
             <div>
               <PlaceStatisticsBlock
                 :title="`${$t('statisticsTab.chosenCountyValueCaption')} ${$t('statisticsTab.ofPartiesCaption')}`"
-                :xValueTitle="$t('statisticsTab.selectedCountyValueCaption')"
+                :xValueTitle="selectedConstituency
+                  ? $t('statisticsTab.selectedConstituencyValueCaption')
+                  : $t('statisticsTab.selectedCountyValueCaption')"
                 :statistics="countiesPartiesStatistics[selectedCounty.id][partyId]"
               />
               <PlaceStatisticsBlock
                 :title="`${$t('statisticsTab.chosenCountyValueCaption')} ${$t('statisticsTab.ofCandidatesCaption')}`"
-                :xValueTitle="$t('statisticsTab.selectedCountyValueCaption')"
+                :xValueTitle="selectedConstituency
+                  ? $t('statisticsTab.selectedConstituencyValueCaption')
+                  : $t('statisticsTab.selectedCountyValueCaption')"
                 :statistics="countiesCandidatesStatistics[selectedCounty.id][partyId]"
               />
             </div>
@@ -110,6 +131,7 @@ import {
 import {
   showStatisticsSection,
   countiesTurnoutStatistics,
+  countiesConstituenciesTurnoutStatistics,
   countiesCandidatesStatistics,
   countiesPartiesStatistics,
   turnouts2022,
