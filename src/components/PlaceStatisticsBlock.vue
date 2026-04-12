@@ -6,7 +6,7 @@
     <table class="statistics-table my-2" style="border-collapse: collapse;">
       <thead>
         <tr>
-          <th>{{ $t('statisticsTab.selectedCountyValueCaption') }}</th>
+          <th>{{ xValueTitle }}</th>
           <th>{{ $t('statisticsTab.deltaFromMeanCaption') }}</th>
           <th>
             <v-tooltip
@@ -56,6 +56,7 @@ import Statistics from '@/models/Statistics';
 
 defineProps<{
   title: string,
+  xValueTitle: string,
   statistics: Statistics,
 }>();
 

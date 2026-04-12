@@ -32,6 +32,7 @@
         <div class="flex max-lg:flex-col gap-4">
           <PlaceStatisticsBlock
             :title="$t('statisticsTab.chosenCountyValueCaption')"
+            :xValueTitle="$t('statisticsTab.selectedCountyValueCaption')"
             :statistics="countiesTurnoutStatistics[selectedCounty.id]"
           />
           <AggregatedStatisticsBlock
@@ -61,10 +62,12 @@
             <div>
               <PlaceStatisticsBlock
                 :title="`${$t('statisticsTab.chosenCountyValueCaption')} ${$t('statisticsTab.ofPartiesCaption')}`"
+                :xValueTitle="$t('statisticsTab.selectedCountyValueCaption')"
                 :statistics="countiesPartiesStatistics[selectedCounty.id][partyId]"
               />
               <PlaceStatisticsBlock
                 :title="`${$t('statisticsTab.chosenCountyValueCaption')} ${$t('statisticsTab.ofCandidatesCaption')}`"
+                :xValueTitle="$t('statisticsTab.selectedCountyValueCaption')"
                 :statistics="countiesCandidatesStatistics[selectedCounty.id][partyId]"
               />
             </div>
