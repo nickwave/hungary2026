@@ -199,7 +199,7 @@ function recalculateTurnoutPercents() {
   // const lastGlobalTurnout = Object.values(turnouts2026.value.global_turnouts).pop();
   // turnoutPercents.value = lastGlobalTurnout;
 
-  turnoutPercents.value = 79.44;
+  turnoutPercents.value = 79.47;
 }
 
 function recalculatePolygonColors() {
