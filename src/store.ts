@@ -362,13 +362,35 @@ function recalculateMandates() {
     mandatesRemains--;
   }
 
-  mandates.value = Object.entries(mandatesResults).map((partyMandates) => {
-    const partyId = partyMandates[0];
-    const mandates = partyMandates[1];
+  mandates.value = [];
+  for (const [partyId, partyMandates] of Object.entries(mandatesResults)) {
     const party = partyById(partyId);
     const partyColor = !party ? 'var(--default-party-color)' : `var(${party.colorVar})`;
-    return {"seats": mandates, "color": partyColor, party: party};
-  })
+    if ((partyMandates - dHondtCasted[partyId]) > 0) {
+      mandates.value.push({
+        "seats": partyMandates - dHondtCasted[partyId],
+        "color": partyColor,
+        party: party,
+        mandateType: 'constituency',
+      });
+    }
+    if (dHondtCasted[partyId] > 0) {
+      mandates.value.push({
+        "seats": dHondtCasted[partyId],
+        "color": `color-mix(in srgb, ${partyColor}, transparent 50%)`,
+        party: party,
+        mandateType: 'partyList',
+      });
+    }
+  }
+
+  // mandates.value = Object.entries(mandatesResults).map((partyMandates) => {
+  //   const partyId = partyMandates[0];
+  //   const mandates = partyMandates[1];
+  //   const party = partyById(partyId);
+  //   const partyColor = !party ? 'var(--default-party-color)' : `var(${party.colorVar})`;
+  //   return {"seats": mandates, "color": partyColor, party: party};
+  // });
 };
 
 async function loadLatestResults() {

@@ -22,6 +22,7 @@ const messages = {
       totalVotesCount: 'Поточна кількість голосів',
       constituenciesVotesCount: 'За кандидатів',
       partiesListsVotesCount: 'За списками',
+      topTwoCandidatesDeltaCaption: 'Різниця між першим і другим місцем',
     },
     statisticsTab: {
       title: 'Статистика вибраного пункту',
@@ -68,6 +69,7 @@ const messages = {
       totalVotesCount: 'Current votes count',
       constituenciesVotesCount: 'Individual constituencies',
       partiesListsVotesCount: 'Parties lists',
+      topTwoCandidatesDeltaCaption: 'Difference between two top candidates',
     },
     statisticsTab: {
       title: 'Chosen place statistics',

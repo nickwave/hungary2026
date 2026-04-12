@@ -48,10 +48,17 @@
           class="mb-8"
         >
           <div
-            class="px-4 cursor-pointer text-title-medium font-bold"
+            class="w-[fit-content] px-4 cursor-pointer text-title-medium font-bold"
             @click="constituencyResults.onHeaderClick()"
           >
             {{ constituencyResults.constituencyName }}
+          </div>
+          <div class="px-4">
+            <span>{{ $t('resultsTab.topTwoCandidatesDeltaCaption') }}: </span>
+            <b>
+              {{ constituencyResults.results[0].votes - constituencyResults.results[1].votes }}
+            </b>
+            <span> ({{ (constituencyResults.results[0].percents -  constituencyResults.results[1].percents).toFixed(2) }}%)</span>
           </div>
           <template v-for="(candidateResults, j) in constituencyResults.results">
             <CandidateResults
