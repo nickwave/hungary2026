@@ -65,9 +65,9 @@ async function recalculateTotalStatistics() {
     countiesTurnouts.push(countyTurnout);
 
     for (const constituency of county.constituencies) {
-      const constituencyPariesVotes = constituency.getVotesCount({'votesType': 'parties'});
+      const constituencyPartiesVotes = constituency.getVotesCount({'votesType': 'parties'});
       const constituencyCandidatesVotes = constituency.getVotesCount({'votesType': 'candidates'});
-      const constituencyTurnout = constituencyPariesVotes / constituency.calculateVoters() * 100;
+      const constituencyTurnout = constituencyPartiesVotes / constituency.calculateVoters() * 100;
       countiesConstituenciesTurnouts[county.id].push(constituencyTurnout);
       constituenciesTurnouts.push(constituencyTurnout);
     }

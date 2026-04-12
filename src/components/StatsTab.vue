@@ -18,7 +18,7 @@
       <Turnouts2022
         v-else-if="selectedCounty"
         :turnouts="turnouts2022[selectedCounty.id].turnouts"
-      />        
+      />
     </div>
 
     <div
@@ -62,7 +62,7 @@
         class="flex flex-col gap-4"
       >
         <div class="text-title-large">
-          {{ selectedConstituency
+          {{ /*selectedConstituency*/ false
             ? $t('statisticsTab.resultsConstituenciesComparsionTitle')
             : $t('statisticsTab.resultsCountiesComparsionTitle')
           }}
@@ -79,14 +79,14 @@
             <div>
               <PlaceStatisticsBlock
                 :title="`${$t('statisticsTab.chosenCountyValueCaption')} ${$t('statisticsTab.ofPartiesCaption')}`"
-                :xValueTitle="selectedConstituency
+                :xValueTitle="/*selectedConstituency*/ false
                   ? $t('statisticsTab.selectedConstituencyValueCaption')
                   : $t('statisticsTab.selectedCountyValueCaption')"
                 :statistics="countiesPartiesStatistics[selectedCounty.id][partyId]"
               />
               <PlaceStatisticsBlock
                 :title="`${$t('statisticsTab.chosenCountyValueCaption')} ${$t('statisticsTab.ofCandidatesCaption')}`"
-                :xValueTitle="selectedConstituency
+                :xValueTitle="/*selectedConstituency*/ false
                   ? $t('statisticsTab.selectedConstituencyValueCaption')
                   : $t('statisticsTab.selectedCountyValueCaption')"
                 :statistics="countiesCandidatesStatistics[selectedCounty.id][partyId]"
