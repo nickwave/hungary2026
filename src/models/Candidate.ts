@@ -5,6 +5,7 @@ enum RegistrationStatus {
 
 export default class Candidate {
   id: number;
+  linkId: number;
   name: string;
   maz: string;
   evk: string;
@@ -15,6 +16,7 @@ export default class Candidate {
 
   constructor(data) {
     this.id = data.id;
+    this.linkId = data.link_id;
     this.name = data.name;
     this.maz = data.maz;
     this.evk = data.evk;
@@ -60,5 +62,9 @@ export default class Candidate {
 
   get isRejected(): boolean {
     return this.status === RegistrationStatus.rejected;
+  }
+
+  get websiteLink(): string {
+    return `https://vtr.valasztas.hu/ogy2026/jelolo-szervezetek/jeloltek/${this.linkId}`;
   }
 }

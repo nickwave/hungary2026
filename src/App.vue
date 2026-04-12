@@ -14,7 +14,12 @@
               {{ $t('captions.turnout') }}: {{ turnoutPercents.toFixed(2) }}%
             </div>
           </div>
-          <div class="h-[300px] w-[600px] max-lg:w-full max-lg:h-[200px] p-4">
+          <div
+            :class="[
+              'w-[600px] max-lg:w-full p-4',
+              showStatisticsSection.votes ? 'h-[340px] max-lg:h-[300px]' : 'h-[300px] max-lg:h-[200px]',
+            ]"
+          >
             <MandatesDistributionChart />
           </div>
         </v-row>
@@ -67,6 +72,7 @@ import StatsTab from '@/components/StatsTab.vue';
 import Loader from '@/components/Loader.vue';
 
 import { turnoutPercents, loadData } from '@/store';
+import { showStatisticsSection } from '@/statistics';
 
 // import MandatesDistributionChart from '@/components/MandatesDistributionChart.vue';
 const MandatesDistributionChart = defineAsyncComponent(() => import('@/components/MandatesDistributionChart.vue'));
@@ -87,13 +93,13 @@ function sendHeightToParent() {
   const mainContentNode = document.getElementById("mainContent");
   const contentHeight = mainContentNode.scrollHeight;
   
-  const parentDomain = import.meta.env.PROD
-    ? 'https://resurgamhub.org'
-    : 'http://localhost:3000';
+  // const parentDomain = import.meta.env.PROD
+  //   ? 'https://resurgamhub.org'
+  //   : 'http://localhost:3000';
   window.parent.postMessage(
     { type: 'IFRAME_HEIGHT', height: contentHeight }, 
-    'https://resurgamhub.org',
-    // 'http://localhost:3000' // Replace with parent's domain
+    // 'https://resurgamhub.org',
+    'http://localhost:3000' // Replace with parent's domain
   );
 }
 

@@ -89,14 +89,46 @@ export default class County {
     }, 0);
   }
 
-  getPartiesResults({
+  getCandidatesResults({
     selectedConstituency,
     selectedSettlement,
     selectedPollingStation,
+    candidatesIdsFilter,
   } : {
     selectedConstituency?: Constituency,
     selectedSettlement?: Settlement,
     selectedPollingStation?: PollingStation,
+    candidatesIdsFilter?: number[],
+  }) : Record<string, number> {
+    const results = {};
+    const constituenciesToProcess = !selectedConstituency
+      ? this.constituencies
+      : [selectedConstituency];
+    for (const constituency of constituenciesToProcess) {
+      for (const [candidateId, candidateVotes] of Object.entries(constituency.getCandidatesResults({
+        selectedSettlement,
+        selectedPollingStation,
+        candidatesIdsFilter,
+      }))) {
+        if (!results[candidateId]) {
+          results[candidateId] = 0;
+        }
+        results[candidateId] += candidateVotes;
+      }
+    }
+    return results;
+  }
+
+  getPartiesResults({
+    selectedConstituency,
+    selectedSettlement,
+    selectedPollingStation,
+    partiesIdsFilter,
+  } : {
+    selectedConstituency?: Constituency,
+    selectedSettlement?: Settlement,
+    selectedPollingStation?: PollingStation,
+    partiesIdsFilter?: number[],
   }) : Record<string, number> {
     const results = {};
     const constituenciesToProcess = !selectedConstituency
@@ -106,6 +138,7 @@ export default class County {
       for (const [partyId, partyVotes] of Object.entries(constituency.getPartiesResults({
         selectedSettlement,
         selectedPollingStation,
+        partiesIdsFilter,
       }))) {
         if (!results[partyId]) {
           results[partyId] = 0;

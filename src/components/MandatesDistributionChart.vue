@@ -1,5 +1,15 @@
 <template>
-  <svg class="w-full h-full" id="pchart" viewBox="0 0 500 300"></svg>
+  <svg class="w-full h-full max-h-[260px] max-lg:max-h-[200px]" id="pchart" viewBox="0 0 500 300"></svg>
+  <div class="flex justify-center gap-4 text-title-medium max-md:text-title-small text-center">
+    <template v-for="partyMandates in mandates">
+      <div
+        v-if="partyMandates.party"
+        :class="['px-3 py-[2px] w-fit rounded-4', partyMandates.party.color]"
+      >
+        {{ partyMandates.party.name }}: <b>{{ partyMandates.seats }}</b>
+      </div>
+    </template>
+  </div>
 </template>
 
 <script lang="ts" setup>

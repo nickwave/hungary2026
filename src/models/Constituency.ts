@@ -75,9 +75,11 @@ export default class Constituency {
   getCandidatesResults({
     selectedSettlement,
     selectedPollingStation,
+    candidatesIdsFilter,
   } : {
     selectedSettlement?: Settlement,
     selectedPollingStation?: PollingStation,
+    candidatesIdsFilter?: number[],
   }) : Record<string, number> {
     const results = {};
     const settlementsToProcess = !selectedSettlement
@@ -86,6 +88,7 @@ export default class Constituency {
     for (const settlement of settlementsToProcess) {
       for (const [candidateId, candidateVotes] of Object.entries(settlement.getCandidatesResults({
         selectedPollingStation,
+        candidatesIdsFilter,
       }))) {
         if (!results[candidateId]) {
           results[candidateId] = 0;
@@ -99,9 +102,11 @@ export default class Constituency {
   getPartiesResults({
     selectedSettlement,
     selectedPollingStation,
+    partiesIdsFilter,
   } : {
     selectedSettlement?: Settlement,
     selectedPollingStation?: PollingStation,
+    partiesIdsFilter?: number[],
   }) : Record<string, number> {
     const results = {};
     const settlementsToProcess = !selectedSettlement
@@ -110,6 +115,7 @@ export default class Constituency {
     for (const settlement of settlementsToProcess) {
       for (const [partyId, partyVotes] of Object.entries(settlement.getPartiesResults({
         selectedPollingStation,
+        partiesIdsFilter,
       }))) {
         if (!results[partyId]) {
           results[partyId] = 0;

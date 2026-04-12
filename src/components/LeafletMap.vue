@@ -27,7 +27,7 @@
     ></LTileLayer>
 
     <LPolygon
-      v-for="polygon in countiesPolygons"
+      v-for="polygon in countiesPolygonsToDisplay"
       :visible="selectedCounty ? false : true"
       @click="(e) => {
         selectedCounty = counties.find((county) => polygon.id === county.id);
@@ -179,6 +179,8 @@ import {
 } from '@/polygons';
 
 const attribution = "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e | \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e";
+
+const countiesPolygonsToDisplay = computed(() => countiesPolygons);
 
 const pollingStationsPolygonsToDisplay = computed(() => {
   const selectedCountyId = selectedCounty.value?.id;

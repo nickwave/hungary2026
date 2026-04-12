@@ -18,6 +18,7 @@
     "@mdi/font": "7.4.47",
     "d3": "^7.9.0",
     "d3-parliament-chart": "^0.0.8",
+    "vite-plugin-compression2": "^2.5.3",
     "vue": "^3.5.30",
     "vue-i18n": "^11.3.0",
     "vuetify": "^4.0.2"

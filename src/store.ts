@@ -12,6 +12,11 @@ import {
   defaultCenter,
 } from '@/polygons';
 
+import {
+  recalculateTotalStatistics,
+  load2022Turnouts,
+} from '@/statistics';
+
 import Api from '@/api';
 
 import Candidate from "@/models/Candidate";
@@ -19,6 +24,11 @@ import Party from "@/models/Party";
 import County from "@/models/County";
 import LoaderData from "@/models/LoaderData";
 
+
+const TISZA_ID = "3600";
+const FIDESZ_ID = "3644";
+const MH_ID = "3592";
+const CHOSEN_PARTIES_IDS = [TISZA_ID, FIDESZ_ID, MH_ID];
 
 const loader = ref(new LoaderData({incrementStep: 5 / 100 * 100}));
 const mapRef = ref();
@@ -179,7 +189,7 @@ function recalculateTurnoutPercents() {
   }, 0);
   const totalVoters = counties.value.reduce((a, county) => {
     return a += county.voters;
-  }, 0) + 496_286 - 48;
+  }, 0) + 496_286 - 70;
   turnoutPercents.value = totalVotes / totalVoters * 100;
 }
 
@@ -296,6 +306,7 @@ function recalculateMandates() {
     }
   }
 
+  // First check minorities parties for possible mandates
   const minoritiesResults = Object.values(partiesVotes)
     .filter((x) => !x.party.isInPartyList)
     .sort((a, b) => a.votes < b.votes);
@@ -312,6 +323,8 @@ function recalculateMandates() {
       mandatesRemains--;
     }
   }
+
+  // Then process all another parties
   const partiesPlusSurplusResults = Object.values(partiesVotes)
     .filter((x) => x.party.isInPartyList && (x.votes / totalPartiesVotes) >= 0.05)
     .sort((a, b) => a.votes < b.votes)
@@ -347,19 +360,37 @@ function recalculateMandates() {
     const mandates = partyMandates[1];
     const party = partyById(partyId);
     const partyColor = !party ? 'var(--default-party-color)' : `var(${party.colorVar})`;
-    return {"seats": mandates, "color": partyColor};
+    return {"seats": mandates, "color": partyColor, party: party};
   })
 };
 
 async function loadLatestResults() {
   const data = await Api.loadLatestResults();
+  if (!data) return;
   for (const [countyId, countyResultsData] of Object.entries(data)) {
     countyById(countyId).applyResults(countyResultsData);
   }
   recalculateTurnoutPercents();
   recalculatePolygonColors();
   recalculateMandates();
+  recalculateTotalStatistics();
   loader.value.increment();
+}
+
+async function initUpdatesChecker() {
+  const lastUpdatedDatetime = await Api.loadLastUpdatedDatetime();
+  localStorage.setItem('lastUpdatedDatetime', lastUpdatedDatetime);
+  const CHECK_INTERVAL_TIME = 1000 * 60 * 5; // Every 5 minutes
+  setInterval(async () => {
+    try {
+      const lastUpdatedDatetime = await Api.loadLastUpdatedDatetime();
+      if (lastUpdatedDatetime !== localStorage.getItem('lastUpdatedDatetime')) {
+        window.location.reload();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, CHECK_INTERVAL_TIME);
 }
 
 async function loadData() {
@@ -375,6 +406,7 @@ async function loadData() {
     loadCandidatesData(),
     loadPartiesData(),
     loadCountiesPolygons(),
+    load2022Turnouts(),
   ]);
 
   let promises = [];
@@ -394,10 +426,17 @@ async function loadData() {
   }
   loader.value.isVisible = false;
   loader.value.reset();
+
+  await initUpdatesChecker();
 }
 
 export {
   loadData,
+
+  TISZA_ID,
+  FIDESZ_ID,
+  MH_ID,
+  CHOSEN_PARTIES_IDS,
 
   loader,
   mapRef,

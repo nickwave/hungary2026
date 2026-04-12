@@ -1,7 +1,9 @@
 <template>
   <div class="px-4">
     <div class="my-4 text-center text-headline-small text-uppercase">
-      {{ $t('resultsTab.title') }}
+      <span>{{ $t('resultsTab.title') }}</span>
+      <b v-if="selectedConstituency"> — {{ selectedConstituency.name }}</b>
+      <b v-else-if="selectedCounty"> — {{ selectedCounty.name }}</b>
     </div>
     <div class="mt-8 flex flex-col gap-2">
       <div>
@@ -24,9 +26,8 @@
     </div>
   </div>
 
-  <div class="h-[1px] mb-8"></div>
-
-  <div>
+  <div v-if="showStatisticsSection.votes" class="my-8"></div>
+  <div v-if="showStatisticsSection.votes">
     <div class="px-4 mb-4 text-center text-headline-small text-uppercase">
       {{ $t('resultsTab.constituenciesTitle') }}
     </div>
@@ -42,15 +43,24 @@
         <v-divider v-if="i < candidatesToDisplay.length - 1" />
       </template> -->
       <template v-for="(candidateResults, i) in candidatesToDisplay">
-        <CandidateResults class='px-4' :candidateResults="candidateResults"/>
+        <CandidateResults
+          class='px-4'
+          :candidateResults="candidateResults"
+          :isWinner="
+            selectedPollingStation || selectedSettlement
+              ? false
+              : selectedConstituency
+                ? i === 0
+                : i % 2 == 0
+          "
+        />
         <v-divider v-if="i < candidatesToDisplay.length - 1" />
       </template>
     </div>
   </div>
 
-  <div class="h-[1px] my-8"></div>
-
-  <div>
+  <div v-if="showStatisticsSection.votes" class="my-8"></div>
+  <div v-if="showStatisticsSection.votes">
     <div class="px-4 mb-4 text-center text-headline-small text-uppercase">
       {{ $t('resultsTab.partiesListsTitle') }}
     </div>
@@ -68,6 +78,8 @@ import { computed } from "vue";
 
 import CandidateResults from '@/components/CandidateResults.vue';
 import PartyResults from '@/components/PartyResults.vue';
+
+import { showStatisticsSection } from '@/statistics';
 
 import {
   counties,
@@ -89,7 +101,7 @@ function getSelectedPlaceTotalVotersCount() {
   const selectedSettlementId = selectedSettlement.value?.id;
   const selectedPollingStationId = selectedPollingStation.value?.id;
   if (!selectedCountyId) {
-    return counties.value.reduce((a, x) => a += x.voters, 0) + 496_286 - 48;
+    return counties.value.reduce((a, x) => a += x.voters, 0) + 496_286 - 70;
     // return counties.value.reduce((a, x) => a += x.voters, 0);
   } else {
     const county = counties.value.find((x) => selectedCountyId === x.id);
@@ -200,7 +212,9 @@ const candidatesToDisplay = computed(() => {
 const partiesToDisplay = computed(() => {
   const results = {};
   let totalPartiesVotes = 0;
-  const countiesToProcess = !selectedCounty.value ? counties.value : [selectedCounty.value];
+  const countiesToProcess = !selectedCounty.value
+    ? counties.value
+    : [selectedCounty.value];
   for (const county of countiesToProcess) {
     for (const [partyId, partyVotes] of Object.entries(county.getPartiesResults({
       selectedConstituency: selectedConstituency.value,
@@ -218,7 +232,7 @@ const partiesToDisplay = computed(() => {
     partyResults.percents = partyResults.votes / totalPartiesVotes * 100;
   }
   return Object.values(results)
-    .filter((x) => x.votes > 0)
+    .filter((x) => x.party.isInPartyList ? x.votes > 0 : x.percents > 0.2688)
     .sort((a, b) => a.votes < b.votes);
 });
 </script>
