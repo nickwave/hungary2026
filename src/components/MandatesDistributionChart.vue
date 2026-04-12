@@ -1,13 +1,15 @@
 <template>
   <svg class="w-full h-full max-h-[260px] max-lg:max-h-[200px]" id="pchart" viewBox="0 0 500 300"></svg>
-  <div class="flex justify-center gap-4 max-lg:gap-2 text-title-medium max-md:text-title-small text-center">
+  <div class="flex justify-center gap-4 max-lg:gap-2 text-title-small text-center">
     <template v-for="partyMandates in mandatesDistributions">
       <div
         v-if="partyMandates.party"
         :class="['px-3 py-[2px] w-fit rounded-4', partyMandates.party.color]"
       >
-        <span>{{ partyMandates.party.name }}: </span>
-        <br class="lg:hidden" />
+        <span>{{ partyMandates.party.name === 'Magyarországi Romák Országos'
+          ? 'MRO'
+          :  partyMandates.party.name }}: </span>
+        <br />
         <b>{{ partyMandates.seats.join(' + ') }}</b>
         <b v-if="partyMandates.seats.length > 1"> = {{ partyMandates.seatsSum }}</b>
       </div>

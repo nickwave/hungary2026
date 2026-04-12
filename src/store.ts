@@ -193,8 +193,11 @@ function recalculateTurnoutPercents() {
   //   return a += county.voters;
   // }, 0); // + 496_286 - 70;
   // turnoutPercents.value = totalVotes / totalVoters * 100;
-  const lastGlobalTurnout = Object.values(turnouts2026.value.global_turnouts).pop();
-  turnoutPercents.value = lastGlobalTurnout;
+
+  // const lastGlobalTurnout = Object.values(turnouts2026.value.global_turnouts).pop();
+  // turnoutPercents.value = lastGlobalTurnout;
+
+  turnoutPercents.value = 79.27;
 }
 
 function recalculatePolygonColors() {
@@ -368,9 +371,9 @@ function recalculateMandates() {
   for (const [partyId, partyMandates] of Object.entries(mandatesResults)) {
     const party = partyById(partyId);
     const partyColor = !party ? 'var(--default-party-color)' : `var(${party.colorVar})`;
-    if ((partyMandates - dHondtCasted[partyId]) > 0) {
+    if ((partyMandates - (dHondtCasted[partyId] ?? 0)) > 0) {
       mandates.value.push({
-        "seats": partyMandates - dHondtCasted[partyId],
+        "seats": partyMandates - (dHondtCasted[partyId] ?? 0),
         "color": partyColor,
         party: party,
         mandateType: 'constituency',
