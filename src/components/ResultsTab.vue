@@ -42,17 +42,35 @@
         <div>{{ constituency }}</div>
         <v-divider v-if="i < candidatesToDisplay.length - 1" />
       </template> -->
-      <template v-for="(candidateResults, i) in candidatesToDisplay">
+      <template v-if="!selectedConstituency">
+        <div
+          v-for="(constituencyResults, i) in candidatesToDisplay"
+          class="mb-8"
+        >
+          <div
+            class="px-4 cursor-pointer text-title-medium font-bold"
+            @click="constituencyResults.onHeaderClick()"
+          >
+            {{ constituencyResults.constituencyName }}
+          </div>
+          <template v-for="(candidateResults, j) in constituencyResults.results">
+            <CandidateResults
+              class='px-4'
+              :candidateResults="candidateResults"
+              :isWinner="j === 0"
+            />
+          </template>
+          <v-divider v-if="i < candidatesToDisplay.length - 1" />
+        </div>
+      </template>
+      <template
+        v-else
+        v-for="(candidateResults, i) in candidatesToDisplay"
+      >
         <CandidateResults
           class='px-4'
           :candidateResults="candidateResults"
-          :isWinner="
-            selectedPollingStation || selectedSettlement
-              ? false
-              : selectedConstituency
-                ? i === 0
-                : i % 2 == 0
-          "
+          :isWinner="!selectedSettlement && !selectedPollingStation ? i === 0 : false"
         />
         <v-divider v-if="i < candidatesToDisplay.length - 1" />
       </template>
@@ -185,24 +203,41 @@ const candidatesToDisplay = computed(() => {
   } else if (selectedCounty.value) {
     const results = [];
     for (const constituency of selectedCounty.value.constituencies) {
+      const constituencyResults = [];
       let i = 0;
       for (const candidateResults of constituencyCandidatesResults(constituency)) {
-        results.push(candidateResults);
+        constituencyResults.push(candidateResults);
         i++;
         if (i >= 2) break;
       }
+      results.push({
+        onHeaderClick: () => {
+          selectedConstituency.value = constituency;
+        },
+        constituencyName: constituency.name,
+        results: constituencyResults,
+      });
     }
     return results;
   } else {
     const results = [];
     for (const county of counties.value) {
       for (const constituency of county.constituencies) {
+        const constituencyResults = [];
         let i = 0;
         for (const candidateResults of constituencyCandidatesResults(constituency)) {
-          results.push(candidateResults);
+          constituencyResults.push(candidateResults);
           i++;
           if (i >= 2) break;
         }
+        results.push({
+          onHeaderClick: () => {
+            selectedCounty.value = county;
+            selectedConstituency.value = constituency;
+          },
+          constituencyName: constituency.name,
+          results: constituencyResults,
+        });
       }
     }
     return results;
