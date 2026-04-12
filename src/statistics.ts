@@ -181,7 +181,7 @@ async function load2026Turnouts() {
     turnouts2026.value = data;
 
     const lastGlobalTurnout = Object.values(turnouts2026.value.global_turnouts).pop();
-    turnoutPercents.value = lastGlobalTurnout;
+    // turnoutPercents.value = lastGlobalTurnout;
   }
   loader.value.increment();
 }

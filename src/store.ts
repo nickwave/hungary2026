@@ -197,7 +197,7 @@ function recalculateTurnoutPercents() {
   // const lastGlobalTurnout = Object.values(turnouts2026.value.global_turnouts).pop();
   // turnoutPercents.value = lastGlobalTurnout;
 
-  turnoutPercents.value = 79.42;
+  turnoutPercents.value = 79.44;
 }
 
 function recalculatePolygonColors() {
@@ -315,7 +315,7 @@ function recalculateMandates() {
 
   // First check minorities parties for possible mandates
   const minoritiesResults = Object.values(partiesVotes)
-    .filter((x) => !x.party.isInPartyList)
+    .filter((x) => !x.party.isInPartyList && x.party.name !== 'FIDESZ-KDNP')
     .sort((a, b) => a.votes < b.votes);
   for (const partyResult of minoritiesResults) {
     const partyId = partyResult.party.id;
