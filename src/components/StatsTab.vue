@@ -2,8 +2,9 @@
   <div class="px-4" v-if="selectedCounty">
     <div class="my-4 text-center text-headline-small text-uppercase">
       <span>{{ $t('statisticsTab.title') }}</span>
-      <b v-if="selectedConstituency"> — {{ selectedConstituency.name }}</b>
-      <b v-else-if="selectedCounty"> — {{ selectedCounty.name }}</b>
+      <!-- <b v-if="selectedConstituency"> — {{ selectedConstituency.name }}</b> -->
+      <!-- <b v-else-if="selectedCounty"> — {{ selectedCounty.name }}</b> -->
+      <b v-if="selectedCounty"> — {{ selectedCounty.name }}</b>
     </div>
 
     <div>

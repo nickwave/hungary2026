@@ -15,6 +15,7 @@ const showStatisticsSection = ref({
   votes: false,
 });
 const countiesTurnoutStatistics = ref({});
+const countiesConstituenciesTurnoutStatistics = ref({});
 const countiesCandidatesStatistics = ref({});
 const countiesPartiesStatistics = ref({});
 const turnouts2022 = ref({});
@@ -46,15 +47,29 @@ function calculateStatistics(x: number, values: number[]) : Statistics {
 
 async function recalculateTotalStatistics() {
   const countiesTurnouts = [];
+  const countiesConstituenciesTurnouts = {};
   const countiesCandidatesResults = [];
   const countiesPartiesResults = {};
+
   for (const county of counties.value) {
+    countiesConstituenciesTurnoutStatistics.value[county.id] = {};
+    countiesConstituenciesTurnouts[county.id] = [];
+
+
     // TURNOUT CALCULATIONS
-    const countyPariesVotes = county.getVotesCount({'votesType': 'parties'});
+    const countyPartiesVotes = county.getVotesCount({'votesType': 'parties'});
     const countyCandidatesVotes = county.getVotesCount({'votesType': 'candidates'});
-    const countyTurnout = countyPariesVotes / county.calculateVoters() * 100;
-    // const countyTurnout = countyPariesVotes / county.voters * 100;
+    const countyTurnout = countyPartiesVotes / county.calculateVoters() * 100;
+    // const countyTurnout = countyPartiesVotes / county.voters * 100;
     countiesTurnouts.push(countyTurnout);
+
+    for (const constituency of county.constituencies) {
+      const constituencyPariesVotes = constituency.getVotesCount({'votesType': 'parties'});
+      const constituencyCandidatesVotes = constituency.getVotesCount({'votesType': 'candidates'});
+      const constituencyTurnout = constituencyPariesVotes / constituency.calculateVoters() * 100;
+      countiesConstituenciesTurnouts[county.id].push(constituencyTurnout);
+    }
+
 
     // CANDIDATES CALCULATIONS
     const countyCandidates = candidates.value.filter((x) => {
@@ -80,12 +95,13 @@ async function recalculateTotalStatistics() {
       countiesCandidatesResults[partyId].push(resultsPercents);
     }
 
+
     // PARTIES CALCULATIONS
     const countyPartiesResults = county.getPartiesResults({
       partiesIdsFilter: CHOSEN_PARTIES_IDS,
     });
     for (const [partyId, votes] of Object.entries(countyPartiesResults)) {
-      const partyResult = votes / countyPariesVotes * 100;
+      const partyResult = votes / countyPartiesVotes * 100;
       if (!countiesPartiesResults[partyId]) {
         countiesPartiesResults[partyId] = [];
       }
@@ -100,6 +116,15 @@ async function recalculateTotalStatistics() {
       countiesTurnouts[i],
       countiesTurnouts,
     );
+    let j = 0;
+    for (const constituency of county.constituencies) {
+      countiesConstituenciesTurnoutStatistics.value[county.id][constituency.id] =
+        calculateStatistics(
+          countiesConstituenciesTurnouts[county.id][j],
+          countiesConstituenciesTurnouts[county.id],
+        );
+      j++;
+    }
 
     // CANDIDATES CALCULATIONS
     const countyCandidatesStatistics = {};
