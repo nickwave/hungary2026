@@ -362,7 +362,9 @@ function recalculateMandates() {
     mandatesRemains--;
   }
 
-  mandates.value = [];
+  if (Object.values(mandatesResults).length > 1) {
+    mandates.value = [];
+  }
   for (const [partyId, partyMandates] of Object.entries(mandatesResults)) {
     const party = partyById(partyId);
     const partyColor = !party ? 'var(--default-party-color)' : `var(${party.colorVar})`;
