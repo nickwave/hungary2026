@@ -53,7 +53,7 @@
           >
             {{ constituencyResults.constituencyName }}
           </div>
-          <div class="px-4">
+          <div v-if="constituencyResults.results.length > 0" class="px-4">
             <span>{{ $t('resultsTab.topTwoCandidatesDeltaCaption') }}: </span>
             <b>
               {{ constituencyResults.results[0].votes - constituencyResults.results[1].votes }}

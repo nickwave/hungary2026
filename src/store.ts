@@ -27,9 +27,9 @@ import County from "@/models/County";
 import LoaderData from "@/models/LoaderData";
 
 
-const TISZA_ID = "3600";
-const FIDESZ_ID = "3644";
-const MH_ID = "3592";
+const TISZA_ID = "3600"; // "1934" // "3600";
+const FIDESZ_ID = "3644"; // "1930" // "3644";
+const MH_ID = "3592"; //"1923" // "3592";
 const CHOSEN_PARTIES_IDS = [TISZA_ID, FIDESZ_ID, MH_ID];
 
 const loader = ref(new LoaderData({incrementStep: 5 / 100 * 100}));

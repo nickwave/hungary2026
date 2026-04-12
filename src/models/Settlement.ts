@@ -36,7 +36,12 @@ export default class Settlement {
 
   applyResults(resultsData) {
     for (const [pollingStationId, pollingStationResultsData] of Object.entries(resultsData)) {
-      this.pollingStationById(pollingStationId).applyResults(pollingStationResultsData);
+      const pollingStation = this.pollingStationById(pollingStationId);
+      if (pollingStation) {
+        pollingStation.applyResults(pollingStationResultsData);
+      } else {
+        // console.log(['ERROR', pollingStationId, resultsData]);
+      }
     }
   }
 
