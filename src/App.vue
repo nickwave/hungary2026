@@ -98,8 +98,8 @@ function sendHeightToParent() {
   //   : 'http://localhost:3000';
   window.parent.postMessage(
     { type: 'IFRAME_HEIGHT', height: contentHeight }, 
-    // 'https://resurgamhub.org',
-    'http://localhost:3000' // Replace with parent's domain
+    'https://resurgamhub.org',
+    // 'http://localhost:3000' // Replace with parent's domain
   );
 }
 
