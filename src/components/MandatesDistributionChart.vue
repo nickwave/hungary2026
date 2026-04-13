@@ -46,6 +46,8 @@ const mandatesDistributions = computed(() => {
 });
 
 function repaintChart() {
+  const mandatesCount = mandates.value.reduce((a, x) => a += x.seats, 0);
+
   d3.select('svg#pchart').selectAll("g > *").remove();
 
   d3.select('svg#pchart')
@@ -60,7 +62,7 @@ function repaintChart() {
         .aggregatedData(mandates.value))
     // ;
     .append("text")
-    .text("199")
+    .text(`${mandatesCount}`)
     .style("font-size", "40px")
     .attr("text-anchor", "middle")
     .attr("x", 250)

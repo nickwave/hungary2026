@@ -199,7 +199,7 @@ function recalculateTurnoutPercents() {
   // const lastGlobalTurnout = Object.values(turnouts2026.value.global_turnouts).pop();
   // turnoutPercents.value = lastGlobalTurnout;
 
-  turnoutPercents.value = 79.56;
+  turnoutPercents.value = 79.55;
 }
 
 function recalculatePolygonColors() {
@@ -284,7 +284,7 @@ function recalculateMandates() {
       for (let i = 0; i < constituencyResults.length; i++) {
         const candidate = constituencyResults[i].candidate;
         const candidateVotes = constituencyResults[i].votes;
-        if (i === 0) {
+        if (i === 0 && candidateVotes > 0) {
           // Process winner candidate
           if (!mandatesResults[candidate.partyId]) {
             mandatesResults[candidate.partyId] = 0;
