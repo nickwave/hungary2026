@@ -10,21 +10,22 @@
     :minZoom="defaultZoom - 1"
     :zoom="defaultZoom"
     :center="defaultCenter"
+    :maxBounds="[[48.6083445, 15.7932981], [45.7930347, 23.5496771]]"
   >
     <!-- <LControlZoom position="bottomright"></LControlZoom> -->
-    <!-- <LTileLayer
+    <LTileLayer
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       layer-type="base"
       name="OpenStreetMap"
       attribution="© OpenStreetMap contributors"
       :opacity="0.8"
-    ></LTileLayer> -->
-    <LTileLayer
+    ></LTileLayer>
+    <!-- <LTileLayer
       url="https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=sLekQeymNCTeDdm1mkP4"
       layer-type="base"
       name="MapTiler"
       :attribution="attribution"
-    ></LTileLayer>
+    ></LTileLayer> -->
 
     <LPolygon
       v-for="polygon in countiesPolygonsToDisplay"
