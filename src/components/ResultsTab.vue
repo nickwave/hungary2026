@@ -109,6 +109,8 @@ import { showStatisticsSection } from '@/statistics';
 import {
   counties,
 
+  postalPartiesVotes,
+
   candidates,
   parties,
   candidateById,
@@ -270,6 +272,14 @@ const partiesToDisplay = computed(() => {
       totalPartiesVotes += partyVotes;
     }
   }
+
+  if (!selectedCounty.value) {
+    for (const [partyId, postalPartyVotes] of Object.entries(postalPartiesVotes)) {
+      results[partyId].votes += postalPartyVotes;
+      totalPartiesVotes += postalPartyVotes;
+    }
+  }
+
   for (const [partyId, partyResults] of Object.entries(results)) {
     partyResults.percents = partyResults.votes / totalPartiesVotes * 100;
   }

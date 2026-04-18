@@ -37,6 +37,8 @@ const mapRef = ref();
 
 const currentLastUpdatedDatetime = ref();
 
+const postalPartiesVotes = {};
+
 const selectedCounty = ref();
 const selectedConstituency = ref();
 const selectedSettlement = ref();
@@ -315,6 +317,13 @@ function recalculateMandates() {
     }
   }
 
+  for (const [partyId, postalPartyVotes] of Object.entries(postalPartiesVotes)) {
+    // if ([FIDESZ_ID, TISZA_ID, MH_ID].includes(partyId)) {
+      partiesVotes[partyId].votes += postalPartyVotes;
+      totalPartiesVotes += postalPartyVotes;
+    // }
+  }
+
   // First check minorities parties for possible mandates
   const minoritiesResults = Object.values(partiesVotes)
     .filter((x) => !x.party.isInPartyList && x.party.name !== 'FIDESZ-KDNP')
@@ -322,7 +331,12 @@ function recalculateMandates() {
   for (const partyResult of minoritiesResults) {
     const partyId = partyResult.party.id;
     const partyVotes = partyResult.votes;
-    const partyPercents = partyVotes / totalPartiesVotes * 100;
+    const surplusVotesCount = (
+      partiesSurplusVotes[TISZA_ID] +
+      partiesSurplusVotes[FIDESZ_ID] +
+      partiesSurplusVotes[MH_ID]
+    );
+    const partyPercents = partyVotes / (totalPartiesVotes + surplusVotesCount) * 100;
     const minorityQuotaThreshold = 1 / 372 * 100;
     if (partyPercents >= minorityQuotaThreshold) {
       if (!mandatesResults[partyId]) {
@@ -384,7 +398,8 @@ function recalculateMandates() {
     if (dHondtCasted[partyId] > 0) {
       mandates.value.push({
         "seats": dHondtCasted[partyId],
-        "color": `color-mix(in srgb, ${partyColor}, transparent 50%)`,
+        "color": partyColor,
+        // "color": `color-mix(in srgb, ${partyColor}, transparent 50%)`,
         party: party,
         mandateType: 'partyList',
       });
@@ -404,7 +419,13 @@ async function loadLatestResults() {
   const data = await Api.loadLatestResults();
   if (!data) return;
   for (const [countyId, countyResultsData] of Object.entries(data)) {
-    countyById(countyId).applyResults(countyResultsData);
+    if (countyId === '00') {
+      for (const [partyId, postalPartyVotes] of Object.entries(countyResultsData.p)) {
+        postalPartiesVotes[partyId] = postalPartyVotes;
+      }
+    } else {
+      countyById(countyId).applyResults(countyResultsData);
+    }
   }
   recalculateTurnoutPercents();
   recalculatePolygonColors();
@@ -478,6 +499,7 @@ export {
 
   loader,
   mapRef,
+  postalPartiesVotes,
   currentLastUpdatedDatetime,
   mandates,
   counties,
